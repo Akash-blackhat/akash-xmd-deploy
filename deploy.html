@@ -36,7 +36,7 @@
         .nav-links { display: flex; gap: 2rem; }
         .nav-links a { color: #333; text-decoration: none; font-weight: 500; }
         .container {
-            max-width: 650px;
+            max-width: 700px;
             margin: 3rem auto;
             padding: 2rem;
             background: white;
@@ -114,13 +114,23 @@
         .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
         small { display: block; margin-top: 0.3rem; color: #666; font-size: 0.8rem; }
+        .step-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+            border-left: 4px solid #764ba2;
+        }
+        .step-card h4 { color: #764ba2; margin-bottom: 0.8rem; }
+        .step-card ol, .step-card ul { margin-left: 1.5rem; }
+        .step-card li { margin: 0.5rem 0; color: #555; }
         .env-box {
             background: #1e1e1e;
             color: #d4d4d4;
             padding: 1rem;
             border-radius: 10px;
             font-family: 'Courier New', monospace;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             margin: 1rem 0;
             overflow-x: auto;
             white-space: pre-wrap;
@@ -136,15 +146,17 @@
             font-size: 0.8rem;
             margin-top: 0.5rem;
         }
-        .step-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-top: 1rem;
+        .fork-btn {
+            display: inline-block;
+            background: #2b3137;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 0.5rem 0;
         }
-        .step-card h4 { color: #764ba2; margin-bottom: 0.5rem; }
-        .step-card ol { margin-left: 1.5rem; }
-        .step-card li { margin: 0.5rem 0; color: #555; }
+        .fork-btn i { margin-right: 0.5rem; }
+        hr { margin: 1rem 0; }
         @media (max-width: 768px) {
             .container { margin: 1rem; padding: 1.5rem; }
             .bot-selector { grid-template-columns: 1fr; }
@@ -223,59 +235,68 @@
             </div>
 
             <button type="submit" class="deploy-btn" id="deployBtn">
-                <i class="fas fa-cloud-upload-alt"></i> Get Deployment Instructions
+                <i class="fas fa-cloud-upload-alt"></i> Generate Deploy Guide
             </button>
         </form>
 
         <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p style="margin-top: 1rem;">⏳ Generating deployment configuration...</p>
+            <p style="margin-top: 1rem;">⏳ Generating deployment guide...</p>
         </div>
 
         <!-- Deployment Instructions -->
         <div id="deployInstructions" style="display: none; margin-top: 2rem;">
-            <hr style="margin: 1rem 0;">
+            <hr>
             
             <div class="step-card">
-                <h4><i class="fas fa-github"></i> Step 1: Deploy on Railway</h4>
+                <h4><i class="fab fa-github"></i> Step 1: Fork the Repository</h4>
+                <p>Pehle is repo ko apne GitHub account mein fork karo:</p>
+                <a href="#" id="forkLink" class="fork-btn" target="_blank">
+                    <i class="fas fa-code-branch"></i> Click to Fork Repository →
+                </a>
+                <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">Fork karne ke baad repo aapke GitHub account mein copy ho jayega</p>
+            </div>
+
+            <div class="step-card">
+                <h4><i class="fab fa-railway"></i> Step 2: Deploy on Railway</h4>
                 <ol>
                     <li>Click the button below to open Railway</li>
                     <li>Click <strong>"Deploy from GitHub"</strong></li>
-                    <li>Select your repository: <strong id="repoNameDisplay"></strong></li>
-                    <li>Wait for import to complete</li>
+                    <li>Select your forked repository: <strong id="repoNameDisplay"></strong></li>
+                    <li>Railway automatically detect karega</li>
                 </ol>
                 <a href="#" id="railwayBtn" class="deploy-btn" style="display: inline-block; width: auto; margin-top: 0.5rem; text-decoration: none; text-align: center;">
-                    <i class="fab fa-railway"></i> Open Railway →
+                    <i class="fab fa-railway"></i> Deploy on Railway →
                 </a>
             </div>
 
-            <div class="step-card" style="margin-top: 1rem;">
-                <h4><i class="fas fa-cog"></i> Step 2: Add Environment Variables</h4>
-                <p>Copy these variables and paste in Railway's <strong>"Variables"</strong> tab:</p>
+            <div class="step-card">
+                <h4><i class="fas fa-cog"></i> Step 3: Add Environment Variables</h4>
+                <p>Railway dashboard mein <strong>"Variables"</strong> tab mein yeh variables add karo:</p>
                 <div class="env-box" id="envVarsText"></div>
                 <button class="copy-btn" onclick="copyEnvVars()"><i class="fas fa-copy"></i> Copy All Variables</button>
             </div>
 
-            <div class="step-card" style="margin-top: 1rem;">
-                <h4><i class="fas fa-play-circle"></i> Step 3: Start Deployment</h4>
+            <div class="step-card">
+                <h4><i class="fas fa-play-circle"></i> Step 4: Start Deployment</h4>
                 <ol>
-                    <li>Go to <strong>"Deploy"</strong> tab</li>
+                    <li>Variables add karne ke baad <strong>"Deploy"</strong> tab pe jao</li>
                     <li>Click <strong>"Deploy"</strong> button</li>
                     <li>Wait 2-3 minutes for deployment</li>
-                    <li>Your bot will automatically connect to WhatsApp!</li>
+                    <li>Bot automatically connect ho jayega!</li>
                 </ol>
             </div>
 
-            <div class="step-card" style="margin-top: 1rem; background: #d4edda;">
-                <h4><i class="fas fa-check-circle" style="color: #155724;"></i> After Deployment</h4>
-                <p>Your bot will send a confirmation message to your WhatsApp number when online.</p>
-                <p><strong>Commands:</strong> Send <code>.menu</code> or <code>.alive</code> to test your bot!</p>
+            <div class="step-card" style="background: #d4edda;">
+                <h4><i class="fas fa-check-circle" style="color: #155724;"></i> ✅ After Deployment</h4>
+                <p>Bot aapke WhatsApp number pe confirmation message bhejega.</p>
+                <p><strong>Test Commands:</strong> <code>.menu</code> ya <code>.alive</code> bhej kar check karo!</p>
             </div>
         </div>
     </div>
 
     <script>
-        // 🔥 APNE REPO LINKS YE DALDO 🔥
+        // 🔥 APNE REPO LINKS YE DALDO 🔥 (YAHI SE USER FORK KAREGA)
         const SECRET_REPOS = {
             main: 'https://github.com/Akash-blackhat/AKASH-XMD-MAIN',
             bug: 'https://github.com/Akash-blackhat/AKASH-XMD-BUG'
@@ -373,23 +394,29 @@
             setTimeout(() => {
                 loader.style.display = 'none';
                 deployBtn.disabled = false;
-                deployBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Get Deployment Instructions';
+                deployBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Generate Deploy Guide';
                 
                 // Update environment variables display
                 updateEnvVars();
                 
-                // Set repo name and Railway link
+                // Get repo URL and name
                 const repoUrl = SECRET_REPOS[botType];
                 const repoName = botType === 'main' ? 'AKASH-XMD-MAIN' : 'AKASH-XMD-BUG';
-                document.getElementById('repoNameDisplay').innerText = repoName;
-                document.getElementById('railwayBtn').href = `https://railway.app/new?template=${encodeURIComponent(repoUrl)}`;
+                
+                // Set fork link (GitHub fork URL)
+                const forkUrl = `https://github.com/Akash-blackhat/${repoName}/fork`;
+                document.getElementById('forkLink').href = forkUrl;
+                
+                // Set Railway deploy link
+                document.getElementById('railwayBtn').href = `https://railway.app/new`;
+                document.getElementById('repoNameDisplay').innerHTML = `<strong>${repoName}</strong> (aapke account mein forked)`;
                 
                 // Show instructions
                 instructions.style.display = 'block';
                 
                 showAlert(
                     '✅ <strong>Deployment Guide Ready!</strong><br><br>' +
-                    'Follow the 3 simple steps below to deploy your bot.',
+                    'Follow the 4 simple steps below to deploy your bot.',
                     'success'
                 );
                 
