@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pair Session - AKASH XMD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 2rem;
+        }
+
+        .pair-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .pair-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .pairing-btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin: 1rem 0;
+        }
+
+        .steps {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .steps li {
+            margin: 0.8rem 0;
+            color: #555;
+        }
+
+        .info-box {
+            background: #f0f0f0;
+            border-left: 4px solid #764ba2;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { margin: 1rem; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-robot"></i> AKASH XMD
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="deploy.html">Deploy Bot</a>
+                <a href="pair.html">Pair Session</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="pair-card">
+            <h3><i class="fas fa-link"></i> Generate Session ID</h3>
+            <p>Click the button below to open our secure session pairing portal.</p>
+            
+            <!-- 🔥 YAHAN APNI PAIRING SITE KA LINK DAAL DO 🔥 -->
+            <a href="YOUR_PAIRING_WEBSITE_URL_HERE" target="_blank" class="pairing-btn" id="pairingBtn">
+                <i class="fas fa-external-link-alt"></i> Open Pairing Portal
+            </a>
+            
+            <div class="info-box">
+                <strong><i class="fas fa-info-circle"></i> How to get Session ID:</strong>
+                <ul class="steps">
+                    <li>1️⃣ Click "Open Pairing Portal" button above</li>
+                    <li>2️⃣ Enter your WhatsApp number with country code</li>
+                    <li>3️⃣ Copy the pairing code or scan QR code</li>
+                    <li>4️⃣ Open WhatsApp → Settings → Linked Devices</li>
+                    <li>5️⃣ Tap "Link with phone number instead"</li>
+                    <li>6️⃣ Enter the pairing code</li>
+                    <li>7️⃣ Your Session ID will be sent to your WhatsApp</li>
+                    <li>8️⃣ Copy the DKML~ session ID and use in Deploy page</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pair-card">
+            <h3><i class="fas fa-question-circle"></i> Need Help?</h3>
+            <p>Contact support for any issues:</p>
+            <p>
+                <i class="fab fa-whatsapp"></i> WhatsApp: <strong>+1234567890</strong><br>
+                <i class="fab fa-discord"></i> Discord: <strong>AKASH XMD Support</strong>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // You can add analytics here if needed
+        document.getElementById('pairingBtn').addEventListener('click', function() {
+            console.log('Pairing portal opened at:', new Date().toISOString());
+        });
+    </script>
+</body>
+</html>
