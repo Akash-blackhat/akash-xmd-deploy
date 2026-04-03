@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Bot - AKASH XMD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        /* Bot Selector */
+        .bot-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bot-card {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .bot-card.selected {
+            border-color: #764ba2;
+            background: linear-gradient(135deg, #f5f0ff 0%, #e8e0ff 100%);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.2);
+        }
+
+        .bot-card i {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .bot-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .bot-card p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .bot-card.main-bot i { color: #667eea; }
+        .bot-card.bug-bot i { color: #f5576c; }
+
+        .deploy-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .deploy-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .deploy-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #764ba2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        small {
+            display: block;
+            margin-top: 0.3rem;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { margin: 1rem; padding: 1.5rem; }
+            .bot-selector { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-robot"></i> AKASH XMD
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="deploy.html">Deploy Bot</a>
+                <a href="pair.html">Pair Session</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2><i class="fas fa-rocket"></i> Deploy Your WhatsApp Bot</h2>
+        <div class="subtitle">Choose bot type and configure settings</div>
+        
+        <div id="alert" class="alert"></div>
+        
+        <form id="deployForm">
+            <!-- Bot Type Selection -->
+            <div class="form-group">
+                <label><i class="fas fa-cube"></i> Select Bot Type</label>
+                <div class="bot-selector">
+                    <div class="bot-card main-bot" data-bot="main" onclick="selectBot('main')">
+                        <i class="fas fa-robot"></i>
+                        <h4>AKASH XMD - MAIN</h4>
+                        <p>Multi-functional bot with 100+ commands</p>
+                    </div>
+                    <div class="bot-card bug-bot" data-bot="bug" onclick="selectBot('bug')">
+                        <i class="fas fa-bug"></i>
+                        <h4>AKASH XMD - BUG</h4>
+                        <p>WhatsApp crash bot with advanced methods</p>
+                    </div>
+                </div>
+                <input type="hidden" id="botType" value="main">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Bot Name</label>
+                <input type="text" id="botName" placeholder="Enter your bot name" value="AKASH XMD" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-phone"></i> Owner Number (SUDO)</label>
+                <input type="tel" id="phoneNumber" placeholder="+923001234567" required>
+                <small>Include country code (e.g., +92 for Pakistan)</small>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-key"></i> Session ID <span style="color: red;">*</span></label>
+                <input type="text" id="sessionId" placeholder="DKML~your_session_id_here" required>
+                <small>Get from Pair Session page | Format: DKML~xxxxx</small>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-language"></i> Bot Language</label>
+                <select id="language">
+                    <option value="english">🇬🇧 English</option>
+                    <option value="hindi">🇮🇳 Hindi</option>
+                    <option value="urdu">🇵🇰 Urdu</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-globe"></i> Bot Mode</label>
+                <select id="mode">
+                    <option value="public">🌍 Public (Everyone can use)</option>
+                    <option value="private">🔒 Private (Only you can use)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="deploy-btn" id="deployBtn">
+                <i class="fas fa-cloud-upload-alt"></i> Deploy to Railway
+            </button>
+        </form>
+
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p style="margin-top: 1rem;">🚀 Deploying your bot to Railway...</p>
+            <p style="font-size: 0.9rem; color: #666;">Please wait, this may take 2-3 minutes</p>
+        </div>
+    </div>
+
+    <script>
+        // 🔥🔥🔥 YAHAN APNE REPO LINKS DAAL DO 🔥🔥🔥
+        const SECRET_REPOS = {
+            main: 'https://github.com/Akash-blackhat/AKASH-XMD-MAIN',  // 👈 D.Kumail-MD ka link daalo
+            bug: 'https://github.com/Akash-blackhat/AKASH-XMD-BUG'     // 👈 D.Kumail-BUG ka link daalo
+        };
+        
+        // 🔥 YAHAN APNI PAIRING SITE KA LINK DAAL DO 🔥
+        const PAIRING_SITE_URL = 'https://your-pairing-site.com';  // 👈 Apni pairing website ka link
+        
+        function selectBot(type) {
+            document.getElementById('botType').value = type;
+            document.querySelectorAll('.bot-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-bot="${type}"]`).classList.add('selected');
+            
+            const botNameInput = document.getElementById('botName');
+            if(type === 'main') {
+                botNameInput.value = 'AKASH XMD MAIN';
+            } else {
+                botNameInput.value = 'AKASH XMD BUG';
+            }
+        }
+        
+        document.getElementById('deployForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const alertDiv = document.getElementById('alert');
+            const loader = document.getElementById('loader');
+            const deployBtn = document.getElementById('deployBtn');
+            
+            const botType = document.getElementById('botType').value;
+            const botName = document.getElementById('botName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const sessionId = document.getElementById('sessionId').value;
+            const language = document.getElementById('language').value;
+            const mode = document.getElementById('mode').value;
+            
+            // Validations
+            if(!sessionId || !sessionId.startsWith('DKML~')) {
+                showAlert('❌ Invalid Session ID! Must start with DKML~', 'error');
+                return;
+            }
+            
+            if(!phoneNumber.match(/^\+\d{10,15}$/)) {
+                showAlert('❌ Invalid phone number! Use format: +923001234567', 'error');
+                return;
+            }
+            
+            // Show loader
+            loader.style.display = 'block';
+            deployBtn.disabled = true;
+            deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deploying...';
+            
+            // Get secret repo URL
+            const repoUrl = SECRET_REPOS[botType];
+            const botTypeName = botType === 'main' ? 'MAIN BOT' : 'BUG BOT';
+            
+            // Create Railway deploy URL with ALL configurations (REPO HIDDEN)
+            const railwayDeployUrl = `https://railway.app/new/template?template=${encodeURIComponent(repoUrl)}&env[SESSION]=${encodeURIComponent(sessionId)}&env[SESSION_URL]=${encodeURIComponent(PAIRING_SITE_URL)}&env[SUDO]=${encodeURIComponent(phoneNumber)}&env[BOT_NAME]=${encodeURIComponent(botName)}&env[MODE]=${encodeURIComponent(mode)}&env[LANGUAGE]=${encodeURIComponent(language)}&env[HANDLERS]=.`;
+            
+            // Simulate deployment (in reality, redirect to Railway)
+            setTimeout(() => {
+                loader.style.display = 'none';
+                deployBtn.disabled = false;
+                deployBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Deploy to Railway';
+                
+                showAlert(
+                    '✅ <strong>Redirecting to Railway...</strong><br><br>' +
+                    '📋 <strong>Configuration:</strong><br>' +
+                    '• Bot Type: ' + botTypeName + '<br>' +
+                    '• Bot Name: ' + botName + '<br>' +
+                    '• Owner: ' + phoneNumber + '<br>' +
+                    '• Language: ' + language + '<br>' +
+                    '• Mode: ' + mode + '<br><br>' +
+                    '🔄 You will be redirected to Railway to complete deployment.',
+                    'success'
+                );
+                
+                // Redirect to Railway with hidden repo
+                setTimeout(() => {
+                    window.open(railwayDeployUrl, '_blank');
+                    // Clear sensitive data
+                    document.getElementById('sessionId').value = '';
+                }, 2000);
+                
+            }, 2000);
+        });
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = message;
+            alertDiv.style.display = 'block';
+            alertDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 8000);
+        }
+        
+        // Real-time validation
+        document.getElementById('sessionId').addEventListener('input', function(e) {
+            this.style.borderColor = e.target.value.startsWith('DKML~') ? '#51cf66' : '#ff6b6b';
+        });
+        
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            this.style.borderColor = e.target.value.match(/^\+\d{10,15}$/) ? '#51cf66' : '#ff6b6b';
+        });
+    </script>
+</body>
+</html>
