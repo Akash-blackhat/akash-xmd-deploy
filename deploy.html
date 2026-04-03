@@ -36,7 +36,7 @@
         .nav-links { display: flex; gap: 2rem; }
         .nav-links a { color: #333; text-decoration: none; font-weight: 500; }
         .container {
-            max-width: 700px;
+            max-width: 600px;
             margin: 3rem auto;
             padding: 2rem;
             background: white;
@@ -77,7 +77,6 @@
         .bot-card.selected {
             border-color: #764ba2;
             background: linear-gradient(135deg, #f5f0ff 0%, #e8e0ff 100%);
-            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.2);
         }
         .bot-card i { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
         .bot-card h4 { font-size: 1.1rem; margin-bottom: 0.3rem; }
@@ -96,7 +95,7 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        .deploy-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .deploy-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .deploy-btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .loader { display: none; text-align: center; margin-top: 1rem; }
         .spinner {
@@ -117,46 +116,31 @@
         .step-card {
             background: #f8f9fa;
             border-radius: 10px;
-            padding: 1.2rem;
+            padding: 1rem;
             margin-top: 1rem;
-            border-left: 4px solid #764ba2;
         }
-        .step-card h4 { color: #764ba2; margin-bottom: 0.8rem; }
-        .step-card ol, .step-card ul { margin-left: 1.5rem; }
-        .step-card li { margin: 0.5rem 0; color: #555; }
+        .step-card h4 { color: #764ba2; margin-bottom: 0.5rem; }
+        .step-card ol { margin-left: 1.5rem; }
+        .step-card li { margin: 0.5rem 0; }
         .env-box {
             background: #1e1e1e;
             color: #d4d4d4;
-            padding: 1rem;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: monospace;
             font-size: 0.7rem;
-            margin: 1rem 0;
+            margin: 0.5rem 0;
             overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
         }
         .copy-btn {
             background: #764ba2;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 5px 12px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
+            font-size: 0.7rem;
         }
-        .fork-btn {
-            display: inline-block;
-            background: #2b3137;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            margin: 0.5rem 0;
-        }
-        .fork-btn i { margin-right: 0.5rem; }
-        hr { margin: 1rem 0; }
         @media (max-width: 768px) {
             .container { margin: 1rem; padding: 1.5rem; }
             .bot-selector { grid-template-columns: 1fr; }
@@ -177,7 +161,7 @@
 
     <div class="container">
         <h2><i class="fas fa-rocket"></i> Deploy Your WhatsApp Bot</h2>
-        <div class="subtitle">Choose bot type and configure settings</div>
+        <div class="subtitle">Select bot type and get deployment guide</div>
         
         <div id="alert" class="alert"></div>
         
@@ -202,19 +186,18 @@
             <div class="form-group">
                 <label><i class="fas fa-user"></i> Bot Name</label>
                 <input type="text" id="botName" placeholder="Enter your bot name" value="AKASH XMD" required>
-                <small>Bot ka display name</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Owner Number (SUDO)</label>
                 <input type="tel" id="phoneNumber" placeholder="+923001234567" required>
-                <small>With country code, no spaces - Bot owner/admin number</small>
+                <small>With country code, no spaces</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-key"></i> Session ID <span style="color: red;">*</span></label>
                 <input type="text" id="sessionId" placeholder="Paste your session ID here" required>
-                <small>Get from any pairing site - DKML~ or any format</small>
+                <small>Get from any pairing site - Any format works</small>
             </div>
 
             <div class="form-group">
@@ -235,7 +218,7 @@
             </div>
 
             <button type="submit" class="deploy-btn" id="deployBtn">
-                <i class="fas fa-cloud-upload-alt"></i> Generate Deploy Guide
+                <i class="fab fa-github"></i> Get Deploy Instructions
             </button>
         </form>
 
@@ -244,204 +227,133 @@
             <p style="margin-top: 1rem;">⏳ Generating deployment guide...</p>
         </div>
 
-        <!-- Deployment Instructions -->
-        <div id="deployInstructions" style="display: none; margin-top: 2rem;">
-            <hr>
+        <div id="deployGuide" style="display: none; margin-top: 2rem;">
+            <hr style="margin-bottom: 1rem;">
             
             <div class="step-card">
-                <h4><i class="fab fa-github"></i> Step 1: Fork the Repository</h4>
-                <p>Pehle is repo ko apne GitHub account mein fork karo:</p>
-                <a href="#" id="forkLink" class="fork-btn" target="_blank">
-                    <i class="fas fa-code-branch"></i> Click to Fork Repository →
+                <h4><i class="fab fa-github"></i> Step 1: Fork Repository</h4>
+                <p>Click below to fork the bot repository to your GitHub:</p>
+                <a href="#" id="forkUrl" target="_blank" class="deploy-btn" style="display: inline-block; width: auto; padding: 10px 20px; text-decoration: none; margin-top: 0.5rem;">
+                    <i class="fas fa-code-branch"></i> Fork Repository →
                 </a>
-                <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">Fork karne ke baad repo aapke GitHub account mein copy ho jayega</p>
             </div>
 
             <div class="step-card">
                 <h4><i class="fab fa-railway"></i> Step 2: Deploy on Railway</h4>
-                <ol>
-                    <li>Click the button below to open Railway</li>
-                    <li>Click <strong>"Deploy from GitHub"</strong></li>
-                    <li>Select your forked repository: <strong id="repoNameDisplay"></strong></li>
-                    <li>Railway automatically detect karega</li>
-                </ol>
-                <a href="#" id="railwayBtn" class="deploy-btn" style="display: inline-block; width: auto; margin-top: 0.5rem; text-decoration: none; text-align: center;">
+                <p>Click below and connect your GitHub:</p>
+                <a href="#" id="railwayUrl" target="_blank" class="deploy-btn" style="display: inline-block; width: auto; padding: 10px 20px; text-decoration: none; background: #1b2e4a; margin-top: 0.5rem;">
                     <i class="fab fa-railway"></i> Deploy on Railway →
                 </a>
             </div>
 
             <div class="step-card">
                 <h4><i class="fas fa-cog"></i> Step 3: Add Environment Variables</h4>
-                <p>Railway dashboard mein <strong>"Variables"</strong> tab mein yeh variables add karo:</p>
-                <div class="env-box" id="envVarsText"></div>
-                <button class="copy-btn" onclick="copyEnvVars()"><i class="fas fa-copy"></i> Copy All Variables</button>
+                <p>Copy these variables and paste in Railway's <strong>"Variables"</strong> tab:</p>
+                <div class="env-box" id="envText"></div>
+                <button class="copy-btn" onclick="copyEnv()"><i class="fas fa-copy"></i> Copy All</button>
             </div>
 
             <div class="step-card">
-                <h4><i class="fas fa-play-circle"></i> Step 4: Start Deployment</h4>
-                <ol>
-                    <li>Variables add karne ke baad <strong>"Deploy"</strong> tab pe jao</li>
-                    <li>Click <strong>"Deploy"</strong> button</li>
-                    <li>Wait 2-3 minutes for deployment</li>
-                    <li>Bot automatically connect ho jayega!</li>
-                </ol>
-            </div>
-
-            <div class="step-card" style="background: #d4edda;">
-                <h4><i class="fas fa-check-circle" style="color: #155724;"></i> ✅ After Deployment</h4>
-                <p>Bot aapke WhatsApp number pe confirmation message bhejega.</p>
-                <p><strong>Test Commands:</strong> <code>.menu</code> ya <code>.alive</code> bhej kar check karo!</p>
+                <h4><i class="fas fa-play"></i> Step 4: Deploy</h4>
+                <p>Go to <strong>"Deploy"</strong> tab and click <strong>Deploy</strong>. Wait 2-3 minutes, your bot will be online!</p>
             </div>
         </div>
     </div>
 
     <script>
-        // 🔥 APNE REPO LINKS YE DALDO 🔥 (YAHI SE USER FORK KAREGA)
-        const SECRET_REPOS = {
+        const REPOS = {
             main: 'https://github.com/Akash-blackhat/AKASH-XMD-MAIN',
             bug: 'https://github.com/Akash-blackhat/AKASH-XMD-BUG'
         };
         
-        let currentEnvVars = {};
-        
         function selectBot(type) {
             document.getElementById('botType').value = type;
-            document.querySelectorAll('.bot-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.bot-card').forEach(c => c.classList.remove('selected'));
             document.querySelector(`[data-bot="${type}"]`).classList.add('selected');
-            const botNameInput = document.getElementById('botName');
-            botNameInput.value = type === 'main' ? 'AKASH XMD MAIN' : 'AKASH XMD BUG';
+            document.getElementById('botName').value = type === 'main' ? 'AKASH XMD MAIN' : 'AKASH XMD BUG';
         }
         
-        function updateEnvVars() {
+        function generateEnvVars() {
             const botType = document.getElementById('botType').value;
             const botName = document.getElementById('botName').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            const sessionId = document.getElementById('sessionId').value;
-            const language = document.getElementById('language').value;
+            const phone = document.getElementById('phoneNumber').value;
+            const session = document.getElementById('sessionId').value;
+            const lang = document.getElementById('language').value;
             const mode = document.getElementById('mode').value;
             
-            // Language mapping
             let langValue = 'en';
-            if (language === 'hindi') langValue = 'hi';
-            else if (language === 'urdu') langValue = 'ur';
-            else langValue = 'en';
+            if (lang === 'hindi') langValue = 'hi';
+            else if (lang === 'urdu') langValue = 'ur';
             
-            currentEnvVars = {
-                SESSION: sessionId || 'your_session_id_here',
-                SUDO: phoneNumber || 'your_number_here',
-                BOT_NAME: botName || 'AKASH XMD',
-                MODE: mode || 'public',
+            let vars = {
+                SESSION: session,
+                SUDO: phone,
+                BOT_NAME: botName,
+                MODE: mode,
                 LANGUAGE: langValue,
-                HANDLERS: '.',
+                HANDLERS: '.'
             };
             
-            // MAIN bot ke liye extra configs
             if (botType === 'main') {
-                currentEnvVars.CHATBOT = 'on';
-                currentEnvVars.AUTO_READ_STATUS = 'true';
-                currentEnvVars.ALWAYS_ONLINE = 'true';
-                currentEnvVars.ANTI_DELETE = 'true';
-                currentEnvVars.REJECT_CALLS = 'true';
+                vars.CHATBOT = 'on';
+                vars.AUTO_READ_STATUS = 'true';
+                vars.ALWAYS_ONLINE = 'true';
+                vars.ANTI_DELETE = 'true';
             } else {
-                // BUG bot ke liye extra configs
-                currentEnvVars.AUTO_REACT = 'true';
-                currentEnvVars.AUTO_TYPING = 'true';
-                currentEnvVars.AUTO_RECORDING = 'true';
-                currentEnvVars.AUTO_STATUS_VIEW = 'true';
-                currentEnvVars.ANTI_DELETE = 'true';
+                vars.AUTO_REACT = 'true';
+                vars.AUTO_TYPING = 'true';
+                vars.AUTO_RECORDING = 'true';
+                vars.ANTI_DELETE = 'true';
             }
             
-            let envText = '';
-            for (const [key, value] of Object.entries(currentEnvVars)) {
-                envText += `${key}=${value}\n`;
+            let text = '';
+            for (let [k, v] of Object.entries(vars)) {
+                text += `${k}=${v}\n`;
             }
-            document.getElementById('envVarsText').innerText = envText;
+            return text;
         }
         
-        function copyEnvVars() {
-            const text = document.getElementById('envVarsText').innerText;
+        function copyEnv() {
+            const text = document.getElementById('envText').innerText;
             navigator.clipboard.writeText(text);
-            showAlert('✅ Environment variables copied to clipboard!', 'success');
+            alert('✅ Environment variables copied!');
         }
         
-        document.getElementById('deployForm').addEventListener('submit', async (e) => {
+        document.getElementById('deployForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const alertDiv = document.getElementById('alert');
-            const loader = document.getElementById('loader');
-            const deployBtn = document.getElementById('deployBtn');
-            const instructions = document.getElementById('deployInstructions');
+            const session = document.getElementById('sessionId').value;
+            const phone = document.getElementById('phoneNumber').value;
+            
+            if (!session || session.length < 5) {
+                alert('❌ Please enter valid Session ID');
+                return;
+            }
+            if (!phone.match(/^\+\d{10,15}$/)) {
+                alert('❌ Invalid phone number! Use format: +923001234567');
+                return;
+            }
             
             const botType = document.getElementById('botType').value;
-            const botName = document.getElementById('botName').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            const sessionId = document.getElementById('sessionId').value;
+            const repoUrl = REPOS[botType];
+            const repoName = botType === 'main' ? 'AKASH-XMD-MAIN' : 'AKASH-XMD-BUG';
             
-            if(!sessionId || sessionId.trim().length < 5) {
-                showAlert('❌ Please enter a valid Session ID', 'error');
-                return;
-            }
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('deployBtn').disabled = true;
             
-            if(!phoneNumber.match(/^\+\d{10,15}$/)) {
-                showAlert('❌ Invalid phone number! Use format: +923001234567', 'error');
-                return;
-            }
+            // Set fork URL
+            document.getElementById('forkUrl').href = `https://github.com/Akash-blackhat/${repoName}/fork`;
+            document.getElementById('railwayUrl').href = 'https://railway.app/new';
             
-            loader.style.display = 'block';
-            deployBtn.disabled = true;
-            deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            // Set environment variables
+            document.getElementById('envText').innerText = generateEnvVars();
             
             setTimeout(() => {
-                loader.style.display = 'none';
-                deployBtn.disabled = false;
-                deployBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Generate Deploy Guide';
-                
-                // Update environment variables display
-                updateEnvVars();
-                
-                // Get repo URL and name
-                const repoUrl = SECRET_REPOS[botType];
-                const repoName = botType === 'main' ? 'AKASH-XMD-MAIN' : 'AKASH-XMD-BUG';
-                
-                // Set fork link (GitHub fork URL)
-                const forkUrl = `https://github.com/Akash-blackhat/${repoName}/fork`;
-                document.getElementById('forkLink').href = forkUrl;
-                
-                // Set Railway deploy link
-                document.getElementById('railwayBtn').href = `https://railway.app/new`;
-                document.getElementById('repoNameDisplay').innerHTML = `<strong>${repoName}</strong> (aapke account mein forked)`;
-                
-                // Show instructions
-                instructions.style.display = 'block';
-                
-                showAlert(
-                    '✅ <strong>Deployment Guide Ready!</strong><br><br>' +
-                    'Follow the 4 simple steps below to deploy your bot.',
-                    'success'
-                );
-                
-                instructions.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('deployBtn').disabled = false;
+                document.getElementById('deployGuide').style.display = 'block';
+                document.getElementById('deployGuide').scrollIntoView({ behavior: 'smooth' });
             }, 1000);
-        });
-        
-        function showAlert(message, type) {
-            const alertDiv = document.getElementById('alert');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = message;
-            alertDiv.style.display = 'block';
-            alertDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            setTimeout(() => alertDiv.style.display = 'none', 8000);
-        }
-        
-        // Real-time validation
-        document.getElementById('sessionId').addEventListener('input', function(e) {
-            const len = e.target.value.length;
-            this.style.borderColor = len >= 5 ? '#51cf66' : len > 0 ? '#ff6b6b' : '#e0e0e0';
-        });
-        
-        document.getElementById('phoneNumber').addEventListener('input', function(e) {
-            this.style.borderColor = e.target.value.match(/^\+\d{10,15}$/) ? '#51cf66' : '#ff6b6b';
         });
     </script>
 </body>
