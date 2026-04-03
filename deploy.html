@@ -6,24 +6,17 @@
     <title>Deploy Bot - AKASH XMD</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem 2rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
-
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -32,7 +25,6 @@
             align-items: center;
             flex-wrap: wrap;
         }
-
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
@@ -41,18 +33,8 @@
             background-clip: text;
             color: transparent;
         }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: #333;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { color: #333; text-decoration: none; font-weight: 500; }
         .container {
             max-width: 600px;
             margin: 3rem auto;
@@ -61,51 +43,27 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
-
-        .container h2 {
-            text-align: center;
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #555;
-            font-weight: 500;
-        }
-
+        .container h2 { text-align: center; margin-bottom: 0.5rem; color: #333; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: #555; font-weight: 500; }
         .form-group input, .form-group select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 1rem;
-            transition: all 0.3s;
         }
-
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #764ba2;
         }
-
         .bot-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-
         .bot-card {
             background: #f8f9fa;
             border: 2px solid #e0e0e0;
@@ -115,32 +73,15 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
         .bot-card.selected {
             border-color: #764ba2;
             background: linear-gradient(135deg, #f5f0ff 0%, #e8e0ff 100%);
-            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.2);
         }
-
-        .bot-card i {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .bot-card h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .bot-card p {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
+        .bot-card i { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+        .bot-card h4 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+        .bot-card p { font-size: 0.8rem; color: #666; }
         .bot-card.main-bot i { color: #667eea; }
         .bot-card.bug-bot i { color: #f5576c; }
-
         .deploy-btn {
             width: 100%;
             padding: 14px;
@@ -151,25 +92,10 @@
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
         }
-
-        .deploy-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .deploy-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .loader {
-            display: none;
-            text-align: center;
-            margin-top: 1rem;
-        }
-
+        .deploy-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .deploy-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .loader { display: none; text-align: center; margin-top: 1rem; }
         .spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #764ba2;
@@ -179,38 +105,11 @@
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .alert {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        small {
-            display: block;
-            margin-top: 0.3rem;
-            color: #666;
-            font-size: 0.8rem;
-        }
-
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .alert { padding: 1rem; border-radius: 10px; margin-bottom: 1rem; display: none; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        small { display: block; margin-top: 0.3rem; color: #666; font-size: 0.8rem; }
         @media (max-width: 768px) {
             .container { margin: 1rem; padding: 1.5rem; }
             .bot-selector { grid-template-columns: 1fr; }
@@ -220,9 +119,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-robot"></i> AKASH XMD
-            </div>
+            <div class="logo"><i class="fas fa-robot"></i> AKASH XMD</div>
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="deploy.html">Deploy Bot</a>
@@ -269,7 +166,7 @@
             <div class="form-group">
                 <label><i class="fas fa-key"></i> Session ID <span style="color: red;">*</span></label>
                 <input type="text" id="sessionId" placeholder="Paste your session ID here (any format)" required>
-                <small>Get from any pairing site | Any format works (AKASH-XMD~, AKASH-MD!, etc.)</small>
+                <small>Get from any pairing site | Any format works</small>
             </div>
 
             <div class="form-group">
@@ -296,8 +193,7 @@
 
         <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p style="margin-top: 1rem;">🚀 Deploying your bot to Railway...</p>
-            <p style="font-size: 0.9rem; color: #666;">Please wait, this may take 2-3 minutes</p>
+            <p style="margin-top: 1rem;">🚀 Preparing deployment...</p>
         </div>
     </div>
 
@@ -308,22 +204,12 @@
             bug: 'https://github.com/Akash-blackhat/AKASH-XMD-BUG'
         };
         
-        // 🔥 APNI PAIRING SITE KA LINK DALDO 🔥
-        const PAIRING_SITE_URL = 'https://akash-xmd-pair.onrender.com';
-        
         function selectBot(type) {
             document.getElementById('botType').value = type;
-            document.querySelectorAll('.bot-card').forEach(card => {
-                card.classList.remove('selected');
-            });
+            document.querySelectorAll('.bot-card').forEach(card => card.classList.remove('selected'));
             document.querySelector(`[data-bot="${type}"]`).classList.add('selected');
-            
             const botNameInput = document.getElementById('botName');
-            if(type === 'main') {
-                botNameInput.value = 'AKASH XMD MAIN';
-            } else {
-                botNameInput.value = 'AKASH XMD BUG';
-            }
+            botNameInput.value = type === 'main' ? 'AKASH XMD MAIN' : 'AKASH XMD BUG';
         }
         
         document.getElementById('deployForm').addEventListener('submit', async (e) => {
@@ -340,9 +226,8 @@
             const language = document.getElementById('language').value;
             const mode = document.getElementById('mode').value;
             
-            // ✅ FIXED: Any session ID works - bas empty na ho
             if(!sessionId || sessionId.trim().length < 5) {
-                showAlert('❌ Please enter a valid Session ID (minimum 5 characters)', 'error');
+                showAlert('❌ Please enter a valid Session ID', 'error');
                 return;
             }
             
@@ -353,13 +238,14 @@
             
             loader.style.display = 'block';
             deployBtn.disabled = true;
-            deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deploying...';
+            deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
             
             const repoUrl = SECRET_REPOS[botType];
             const botTypeName = botType === 'main' ? 'MAIN BOT' : 'BUG BOT';
             
-            // Railway deploy URL with ALL configurations
-            const railwayDeployUrl = `https://railway.app/new/template?template=${encodeURIComponent(repoUrl)}&env[SESSION]=${encodeURIComponent(sessionId)}&env[SESSION_URL]=${encodeURIComponent(PAIRING_SITE_URL)}&env[SUDO]=${encodeURIComponent(phoneNumber)}&env[BOT_NAME]=${encodeURIComponent(botName)}&env[MODE]=${encodeURIComponent(mode)}&env[LANGUAGE]=${encodeURIComponent(language)}&env[HANDLERS]=.`;
+            // ✅ NEW: Railway Deploy URL (GitHub Deploy method)
+            // User ko seedha GitHub repo deploy page pe le jayenge
+            const railwayDeployUrl = `https://railway.app/github/deploy?repository=${encodeURIComponent(repoUrl)}`;
             
             setTimeout(() => {
                 loader.style.display = 'none';
@@ -368,20 +254,25 @@
                 
                 showAlert(
                     '✅ <strong>Redirecting to Railway...</strong><br><br>' +
-                    '📋 <strong>Configuration:</strong><br>' +
+                    '📋 <strong>Configuration to set after redirect:</strong><br>' +
                     '• Bot Type: ' + botTypeName + '<br>' +
                     '• Bot Name: ' + botName + '<br>' +
                     '• Owner: ' + phoneNumber + '<br>' +
                     '• Language: ' + language + '<br>' +
                     '• Mode: ' + mode + '<br><br>' +
-                    '🔄 You will be redirected to Railway to complete deployment.',
+                    '📝 <strong>After reaching Railway, set these environment variables:</strong><br>' +
+                    'SESSION=' + sessionId + '<br>' +
+                    'SUDO=' + phoneNumber + '<br>' +
+                    'BOT_NAME=' + botName + '<br>' +
+                    'MODE=' + mode + '<br>' +
+                    'LANGUAGE=' + language + '<br><br>' +
+                    '🔄 Click Deploy on Railway to start your bot!',
                     'success'
                 );
                 
                 setTimeout(() => {
                     window.open(railwayDeployUrl, '_blank');
-                    document.getElementById('sessionId').value = '';
-                }, 2000);
+                }, 3000);
                 
             }, 2000);
         });
@@ -392,21 +283,12 @@
             alertDiv.innerHTML = message;
             alertDiv.style.display = 'block';
             alertDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            setTimeout(() => {
-                alertDiv.style.display = 'none';
-            }, 8000);
+            setTimeout(() => alertDiv.style.display = 'none', 15000);
         }
         
-        // Real-time validation - ab sirf length check
         document.getElementById('sessionId').addEventListener('input', function(e) {
             const len = e.target.value.length;
-            if(len >= 10) {
-                this.style.borderColor = '#51cf66';
-            } else if(len > 0) {
-                this.style.borderColor = '#ff6b6b';
-            } else {
-                this.style.borderColor = '#e0e0e0';
-            }
+            this.style.borderColor = len >= 5 ? '#51cf66' : len > 0 ? '#ff6b6b' : '#e0e0e0';
         });
         
         document.getElementById('phoneNumber').addEventListener('input', function(e) {
