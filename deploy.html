@@ -115,12 +115,12 @@
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
         small { display: block; margin-top: 0.3rem; color: #666; font-size: 0.8rem; }
         .env-box {
-            background: #2d2d2d;
-            color: #f8f8f2;
+            background: #1e1e1e;
+            color: #d4d4d4;
             padding: 1rem;
             border-radius: 10px;
-            font-family: monospace;
-            font-size: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
             margin: 1rem 0;
             overflow-x: auto;
             white-space: pre-wrap;
@@ -130,12 +130,21 @@
             background: #764ba2;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             margin-top: 0.5rem;
         }
+        .step-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .step-card h4 { color: #764ba2; margin-bottom: 0.5rem; }
+        .step-card ol { margin-left: 1.5rem; }
+        .step-card li { margin: 0.5rem 0; color: #555; }
         @media (max-width: 768px) {
             .container { margin: 1rem; padding: 1.5rem; }
             .bot-selector { grid-template-columns: 1fr; }
@@ -181,19 +190,19 @@
             <div class="form-group">
                 <label><i class="fas fa-user"></i> Bot Name</label>
                 <input type="text" id="botName" placeholder="Enter your bot name" value="AKASH XMD" required>
-                <small>Bot ka display name (BOT_NAME)</small>
+                <small>Bot ka display name</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Owner Number (SUDO)</label>
                 <input type="tel" id="phoneNumber" placeholder="+923001234567" required>
-                <small>With country code, no spaces (SUDO) - Bot owner/admin number</small>
+                <small>With country code, no spaces - Bot owner/admin number</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-key"></i> Session ID <span style="color: red;">*</span></label>
                 <input type="text" id="sessionId" placeholder="Paste your session ID here" required>
-                <small>SESSION or SESSION_ID - Get from any pairing site</small>
+                <small>Get from any pairing site - DKML~ or any format</small>
             </div>
 
             <div class="form-group">
@@ -203,7 +212,6 @@
                     <option value="hindi">🇮🇳 Hindi</option>
                     <option value="urdu">🇵🇰 Urdu</option>
                 </select>
-                <small>LANGUAGE - Bot response language</small>
             </div>
 
             <div class="form-group">
@@ -212,28 +220,57 @@
                     <option value="public">🌍 Public (Everyone can use)</option>
                     <option value="private">🔒 Private (Only owner can use)</option>
                 </select>
-                <small>MODE - Public = sab use kar sakte, Private = sirf owner</small>
             </div>
 
             <button type="submit" class="deploy-btn" id="deployBtn">
-                <i class="fas fa-cloud-upload-alt"></i> Deploy to Railway
+                <i class="fas fa-cloud-upload-alt"></i> Get Deployment Instructions
             </button>
         </form>
 
         <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p style="margin-top: 1rem;">🚀 Preparing deployment...</p>
+            <p style="margin-top: 1rem;">⏳ Generating deployment configuration...</p>
         </div>
 
-        <!-- Environment Variables Preview -->
-        <div id="envPreview" style="display: none; margin-top: 1.5rem;">
+        <!-- Deployment Instructions -->
+        <div id="deployInstructions" style="display: none; margin-top: 2rem;">
             <hr style="margin: 1rem 0;">
-            <h4><i class="fas fa-code"></i> Environment Variables to Set:</h4>
-            <div class="env-box" id="envVarsText"></div>
-            <button class="copy-btn" onclick="copyEnvVars()"><i class="fas fa-copy"></i> Copy All</button>
-            <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">
-                ⚡ Copy these variables and paste in Railway dashboard under "Variables" tab
-            </p>
+            
+            <div class="step-card">
+                <h4><i class="fas fa-github"></i> Step 1: Deploy on Railway</h4>
+                <ol>
+                    <li>Click the button below to open Railway</li>
+                    <li>Click <strong>"Deploy from GitHub"</strong></li>
+                    <li>Select your repository: <strong id="repoNameDisplay"></strong></li>
+                    <li>Wait for import to complete</li>
+                </ol>
+                <a href="#" id="railwayBtn" class="deploy-btn" style="display: inline-block; width: auto; margin-top: 0.5rem; text-decoration: none; text-align: center;">
+                    <i class="fab fa-railway"></i> Open Railway →
+                </a>
+            </div>
+
+            <div class="step-card" style="margin-top: 1rem;">
+                <h4><i class="fas fa-cog"></i> Step 2: Add Environment Variables</h4>
+                <p>Copy these variables and paste in Railway's <strong>"Variables"</strong> tab:</p>
+                <div class="env-box" id="envVarsText"></div>
+                <button class="copy-btn" onclick="copyEnvVars()"><i class="fas fa-copy"></i> Copy All Variables</button>
+            </div>
+
+            <div class="step-card" style="margin-top: 1rem;">
+                <h4><i class="fas fa-play-circle"></i> Step 3: Start Deployment</h4>
+                <ol>
+                    <li>Go to <strong>"Deploy"</strong> tab</li>
+                    <li>Click <strong>"Deploy"</strong> button</li>
+                    <li>Wait 2-3 minutes for deployment</li>
+                    <li>Your bot will automatically connect to WhatsApp!</li>
+                </ol>
+            </div>
+
+            <div class="step-card" style="margin-top: 1rem; background: #d4edda;">
+                <h4><i class="fas fa-check-circle" style="color: #155724;"></i> After Deployment</h4>
+                <p>Your bot will send a confirmation message to your WhatsApp number when online.</p>
+                <p><strong>Commands:</strong> Send <code>.menu</code> or <code>.alive</code> to test your bot!</p>
+            </div>
         </div>
     </div>
 
@@ -252,10 +289,9 @@
             document.querySelector(`[data-bot="${type}"]`).classList.add('selected');
             const botNameInput = document.getElementById('botName');
             botNameInput.value = type === 'main' ? 'AKASH XMD MAIN' : 'AKASH XMD BUG';
-            updateEnvPreview();
         }
         
-        function updateEnvPreview() {
+        function updateEnvVars() {
             const botType = document.getElementById('botType').value;
             const botName = document.getElementById('botName').value;
             const phoneNumber = document.getElementById('phoneNumber').value;
@@ -263,21 +299,23 @@
             const language = document.getElementById('language').value;
             const mode = document.getElementById('mode').value;
             
-            // MAIN bot ke liye extra variables
-            const isMainBot = botType === 'main';
+            // Language mapping
+            let langValue = 'en';
+            if (language === 'hindi') langValue = 'hi';
+            else if (language === 'urdu') langValue = 'ur';
+            else langValue = 'en';
             
             currentEnvVars = {
-                // Common for both bots
                 SESSION: sessionId || 'your_session_id_here',
                 SUDO: phoneNumber || 'your_number_here',
                 BOT_NAME: botName || 'AKASH XMD',
                 MODE: mode || 'public',
-                LANGUAGE: language === 'english' ? 'en' : (language === 'hindi' ? 'hi' : 'ur'),
+                LANGUAGE: langValue,
                 HANDLERS: '.',
             };
             
             // MAIN bot ke liye extra configs
-            if (isMainBot) {
+            if (botType === 'main') {
                 currentEnvVars.CHATBOT = 'on';
                 currentEnvVars.AUTO_READ_STATUS = 'true';
                 currentEnvVars.ALWAYS_ONLINE = 'true';
@@ -302,7 +340,7 @@
         function copyEnvVars() {
             const text = document.getElementById('envVarsText').innerText;
             navigator.clipboard.writeText(text);
-            alert('✅ Environment variables copied to clipboard!');
+            showAlert('✅ Environment variables copied to clipboard!', 'success');
         }
         
         document.getElementById('deployForm').addEventListener('submit', async (e) => {
@@ -311,16 +349,13 @@
             const alertDiv = document.getElementById('alert');
             const loader = document.getElementById('loader');
             const deployBtn = document.getElementById('deployBtn');
-            const envPreview = document.getElementById('envPreview');
+            const instructions = document.getElementById('deployInstructions');
             
             const botType = document.getElementById('botType').value;
             const botName = document.getElementById('botName').value;
             const phoneNumber = document.getElementById('phoneNumber').value;
             const sessionId = document.getElementById('sessionId').value;
-            const language = document.getElementById('language').value;
-            const mode = document.getElementById('mode').value;
             
-            // Validations
             if(!sessionId || sessionId.trim().length < 5) {
                 showAlert('❌ Please enter a valid Session ID', 'error');
                 return;
@@ -331,50 +366,36 @@
                 return;
             }
             
-            // Update preview
-            updateEnvPreview();
-            
             loader.style.display = 'block';
             deployBtn.disabled = true;
-            deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
-            
-            const repoUrl = SECRET_REPOS[botType];
-            const botTypeName = botType === 'main' ? 'MAIN BOT' : 'BUG BOT';
-            
-            // Railway GitHub Deploy URL (NO 404)
-            const railwayDeployUrl = `https://railway.app/github/deploy?repository=${encodeURIComponent(repoUrl)}`;
+            deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
             
             setTimeout(() => {
                 loader.style.display = 'none';
                 deployBtn.disabled = false;
-                deployBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Deploy to Railway';
+                deployBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Get Deployment Instructions';
                 
-                // Show environment variables
-                envPreview.style.display = 'block';
+                // Update environment variables display
+                updateEnvVars();
+                
+                // Set repo name and Railway link
+                const repoUrl = SECRET_REPOS[botType];
+                const repoName = botType === 'main' ? 'AKASH-XMD-MAIN' : 'AKASH-XMD-BUG';
+                document.getElementById('repoNameDisplay').innerText = repoName;
+                document.getElementById('railwayBtn').href = `https://railway.app/new?template=${encodeURIComponent(repoUrl)}`;
+                
+                // Show instructions
+                instructions.style.display = 'block';
                 
                 showAlert(
-                    '✅ <strong>Deployment Ready!</strong><br><br>' +
-                    '📋 <strong>Your Configuration:</strong><br>' +
-                    '• Bot Type: ' + botTypeName + '<br>' +
-                    '• Bot Name: ' + botName + '<br>' +
-                    '• Owner: ' + phoneNumber + '<br>' +
-                    '• Language: ' + language + '<br>' +
-                    '• Mode: ' + mode + '<br><br>' +
-                    '📝 <strong>Next Steps:</strong><br>' +
-                    '1️⃣ Click the button below to open Railway<br>' +
-                    '2️⃣ Click "Deploy from GitHub"<br>' +
-                    '3️⃣ Select your repository<br>' +
-                    '4️⃣ Go to "Variables" tab and paste the environment variables below<br>' +
-                    '5️⃣ Click "Deploy" and wait 2-3 minutes<br><br>' +
-                    '🔄 Your bot will automatically connect with your WhatsApp!',
+                    '✅ <strong>Deployment Guide Ready!</strong><br><br>' +
+                    'Follow the 3 simple steps below to deploy your bot.',
                     'success'
                 );
                 
-                setTimeout(() => {
-                    window.open(railwayDeployUrl, '_blank');
-                }, 2000);
+                instructions.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 
-            }, 2000);
+            }, 1000);
         });
         
         function showAlert(message, type) {
@@ -383,24 +404,18 @@
             alertDiv.innerHTML = message;
             alertDiv.style.display = 'block';
             alertDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            setTimeout(() => alertDiv.style.display = 'none', 20000);
+            setTimeout(() => alertDiv.style.display = 'none', 8000);
         }
         
-        // Real-time validation and preview update
+        // Real-time validation
         document.getElementById('sessionId').addEventListener('input', function(e) {
             const len = e.target.value.length;
             this.style.borderColor = len >= 5 ? '#51cf66' : len > 0 ? '#ff6b6b' : '#e0e0e0';
-            updateEnvPreview();
         });
         
         document.getElementById('phoneNumber').addEventListener('input', function(e) {
             this.style.borderColor = e.target.value.match(/^\+\d{10,15}$/) ? '#51cf66' : '#ff6b6b';
-            updateEnvPreview();
         });
-        
-        document.getElementById('botName').addEventListener('input', () => updateEnvPreview());
-        document.getElementById('language').addEventListener('change', () => updateEnvPreview());
-        document.getElementById('mode').addEventListener('change', () => updateEnvPreview());
     </script>
 </body>
 </html>
