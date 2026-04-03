@@ -99,7 +99,6 @@
             border-color: #764ba2;
         }
 
-        /* Bot Selector */
         .bot-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -239,7 +238,6 @@
         <div id="alert" class="alert"></div>
         
         <form id="deployForm">
-            <!-- Bot Type Selection -->
             <div class="form-group">
                 <label><i class="fas fa-cube"></i> Select Bot Type</label>
                 <div class="bot-selector">
@@ -265,13 +263,13 @@
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Owner Number (SUDO)</label>
                 <input type="tel" id="phoneNumber" placeholder="+923001234567" required>
-                <small>Include country code (e.g., +92 for Pakistan)</small>
+                <small>Include country code (e.g., +92 for Pakistan, +91 for India)</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-key"></i> Session ID <span style="color: red;">*</span></label>
-                <input type="text" id="sessionId" placeholder="DKML~your_session_id_here" required>
-                <small>Get from Pair Session page | Format: DKML~xxxxx</small>
+                <input type="text" id="sessionId" placeholder="Paste your session ID here (any format)" required>
+                <small>Get from any pairing site | Any format works (AKASH-XMD~, AKASH-MD!, etc.)</small>
             </div>
 
             <div class="form-group">
@@ -304,14 +302,14 @@
     </div>
 
     <script>
-        // 🔥🔥🔥 YAHAN APNE REPO LINKS DAAL DO 🔥🔥🔥
+        // 🔥 APNE REPO LINKS YE DALDO 🔥
         const SECRET_REPOS = {
-            main: 'https://github.com/Akash-blackhat/AKASH-XMD-MAIN',  // 👈 D.Kumail-MD ka link daalo
-            bug: 'https://github.com/Akash-blackhat/AKASH-XMD-BUG'     // 👈 D.Kumail-BUG ka link daalo
+            main: 'https://github.com/Akash-blackhat/AKASH-XMD-MAIN',
+            bug: 'https://github.com/Akash-blackhat/AKASH-XMD-BUG'
         };
         
-        // 🔥 YAHAN APNI PAIRING SITE KA LINK DAAL DO 🔥
-        const PAIRING_SITE_URL = 'https://akash-xmd-pair.onrender.com';  // 👈 Apni pairing website ka link
+        // 🔥 APNI PAIRING SITE KA LINK DALDO 🔥
+        const PAIRING_SITE_URL = 'https://akash-xmd-pair.onrender.com';
         
         function selectBot(type) {
             document.getElementById('botType').value = type;
@@ -342,9 +340,9 @@
             const language = document.getElementById('language').value;
             const mode = document.getElementById('mode').value;
             
-            // Validations
-            if(!sessionId || !sessionId.startsWith('DKML~')) {
-                showAlert('❌ Invalid Session ID! Must start with DKML~', 'error');
+            // ✅ FIXED: Any session ID works - bas empty na ho
+            if(!sessionId || sessionId.trim().length < 5) {
+                showAlert('❌ Please enter a valid Session ID (minimum 5 characters)', 'error');
                 return;
             }
             
@@ -353,19 +351,16 @@
                 return;
             }
             
-            // Show loader
             loader.style.display = 'block';
             deployBtn.disabled = true;
             deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deploying...';
             
-            // Get secret repo URL
             const repoUrl = SECRET_REPOS[botType];
             const botTypeName = botType === 'main' ? 'MAIN BOT' : 'BUG BOT';
             
-            // Create Railway deploy URL with ALL configurations (REPO HIDDEN)
+            // Railway deploy URL with ALL configurations
             const railwayDeployUrl = `https://railway.app/new/template?template=${encodeURIComponent(repoUrl)}&env[SESSION]=${encodeURIComponent(sessionId)}&env[SESSION_URL]=${encodeURIComponent(PAIRING_SITE_URL)}&env[SUDO]=${encodeURIComponent(phoneNumber)}&env[BOT_NAME]=${encodeURIComponent(botName)}&env[MODE]=${encodeURIComponent(mode)}&env[LANGUAGE]=${encodeURIComponent(language)}&env[HANDLERS]=.`;
             
-            // Simulate deployment (in reality, redirect to Railway)
             setTimeout(() => {
                 loader.style.display = 'none';
                 deployBtn.disabled = false;
@@ -383,10 +378,8 @@
                     'success'
                 );
                 
-                // Redirect to Railway with hidden repo
                 setTimeout(() => {
                     window.open(railwayDeployUrl, '_blank');
-                    // Clear sensitive data
                     document.getElementById('sessionId').value = '';
                 }, 2000);
                 
@@ -404,9 +397,16 @@
             }, 8000);
         }
         
-        // Real-time validation
+        // Real-time validation - ab sirf length check
         document.getElementById('sessionId').addEventListener('input', function(e) {
-            this.style.borderColor = e.target.value.startsWith('DKML~') ? '#51cf66' : '#ff6b6b';
+            const len = e.target.value.length;
+            if(len >= 10) {
+                this.style.borderColor = '#51cf66';
+            } else if(len > 0) {
+                this.style.borderColor = '#ff6b6b';
+            } else {
+                this.style.borderColor = '#e0e0e0';
+            }
         });
         
         document.getElementById('phoneNumber').addEventListener('input', function(e) {
