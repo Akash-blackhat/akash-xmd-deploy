@@ -36,7 +36,7 @@
         .nav-links { display: flex; gap: 2rem; }
         .nav-links a { color: #333; text-decoration: none; font-weight: 500; }
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 3rem auto;
             padding: 2rem;
             background: white;
@@ -53,6 +53,7 @@
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 1rem;
+            transition: all 0.3s;
         }
         .form-group input:focus, .form-group select:focus {
             outline: none;
@@ -76,6 +77,7 @@
         .bot-card.selected {
             border-color: #764ba2;
             background: linear-gradient(135deg, #f5f0ff 0%, #e8e0ff 100%);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.2);
         }
         .bot-card i { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
         .bot-card h4 { font-size: 1.1rem; margin-bottom: 0.3rem; }
@@ -92,6 +94,7 @@
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
         }
         .deploy-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .deploy-btn:disabled { opacity: 0.7; cursor: not-allowed; }
@@ -109,7 +112,30 @@
         .alert { padding: 1rem; border-radius: 10px; margin-bottom: 1rem; display: none; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
         small { display: block; margin-top: 0.3rem; color: #666; font-size: 0.8rem; }
+        .env-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .copy-btn {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-top: 0.5rem;
+        }
         @media (max-width: 768px) {
             .container { margin: 1rem; padding: 1.5rem; }
             .bot-selector { grid-template-columns: 1fr; }
@@ -155,18 +181,19 @@
             <div class="form-group">
                 <label><i class="fas fa-user"></i> Bot Name</label>
                 <input type="text" id="botName" placeholder="Enter your bot name" value="AKASH XMD" required>
+                <small>Bot ka display name (BOT_NAME)</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-phone"></i> Owner Number (SUDO)</label>
                 <input type="tel" id="phoneNumber" placeholder="+923001234567" required>
-                <small>Include country code (e.g., +92 for Pakistan, +91 for India)</small>
+                <small>With country code, no spaces (SUDO) - Bot owner/admin number</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-key"></i> Session ID <span style="color: red;">*</span></label>
-                <input type="text" id="sessionId" placeholder="Paste your session ID here (any format)" required>
-                <small>Get from any pairing site | Any format works</small>
+                <input type="text" id="sessionId" placeholder="Paste your session ID here" required>
+                <small>SESSION or SESSION_ID - Get from any pairing site</small>
             </div>
 
             <div class="form-group">
@@ -176,14 +203,16 @@
                     <option value="hindi">🇮🇳 Hindi</option>
                     <option value="urdu">🇵🇰 Urdu</option>
                 </select>
+                <small>LANGUAGE - Bot response language</small>
             </div>
 
             <div class="form-group">
                 <label><i class="fas fa-globe"></i> Bot Mode</label>
                 <select id="mode">
                     <option value="public">🌍 Public (Everyone can use)</option>
-                    <option value="private">🔒 Private (Only you can use)</option>
+                    <option value="private">🔒 Private (Only owner can use)</option>
                 </select>
+                <small>MODE - Public = sab use kar sakte, Private = sirf owner</small>
             </div>
 
             <button type="submit" class="deploy-btn" id="deployBtn">
@@ -195,6 +224,17 @@
             <div class="spinner"></div>
             <p style="margin-top: 1rem;">🚀 Preparing deployment...</p>
         </div>
+
+        <!-- Environment Variables Preview -->
+        <div id="envPreview" style="display: none; margin-top: 1.5rem;">
+            <hr style="margin: 1rem 0;">
+            <h4><i class="fas fa-code"></i> Environment Variables to Set:</h4>
+            <div class="env-box" id="envVarsText"></div>
+            <button class="copy-btn" onclick="copyEnvVars()"><i class="fas fa-copy"></i> Copy All</button>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">
+                ⚡ Copy these variables and paste in Railway dashboard under "Variables" tab
+            </p>
+        </div>
     </div>
 
     <script>
@@ -204,12 +244,65 @@
             bug: 'https://github.com/Akash-blackhat/AKASH-XMD-BUG'
         };
         
+        let currentEnvVars = {};
+        
         function selectBot(type) {
             document.getElementById('botType').value = type;
             document.querySelectorAll('.bot-card').forEach(card => card.classList.remove('selected'));
             document.querySelector(`[data-bot="${type}"]`).classList.add('selected');
             const botNameInput = document.getElementById('botName');
             botNameInput.value = type === 'main' ? 'AKASH XMD MAIN' : 'AKASH XMD BUG';
+            updateEnvPreview();
+        }
+        
+        function updateEnvPreview() {
+            const botType = document.getElementById('botType').value;
+            const botName = document.getElementById('botName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const sessionId = document.getElementById('sessionId').value;
+            const language = document.getElementById('language').value;
+            const mode = document.getElementById('mode').value;
+            
+            // MAIN bot ke liye extra variables
+            const isMainBot = botType === 'main';
+            
+            currentEnvVars = {
+                // Common for both bots
+                SESSION: sessionId || 'your_session_id_here',
+                SUDO: phoneNumber || 'your_number_here',
+                BOT_NAME: botName || 'AKASH XMD',
+                MODE: mode || 'public',
+                LANGUAGE: language === 'english' ? 'en' : (language === 'hindi' ? 'hi' : 'ur'),
+                HANDLERS: '.',
+            };
+            
+            // MAIN bot ke liye extra configs
+            if (isMainBot) {
+                currentEnvVars.CHATBOT = 'on';
+                currentEnvVars.AUTO_READ_STATUS = 'true';
+                currentEnvVars.ALWAYS_ONLINE = 'true';
+                currentEnvVars.ANTI_DELETE = 'true';
+                currentEnvVars.REJECT_CALLS = 'true';
+            } else {
+                // BUG bot ke liye extra configs
+                currentEnvVars.AUTO_REACT = 'true';
+                currentEnvVars.AUTO_TYPING = 'true';
+                currentEnvVars.AUTO_RECORDING = 'true';
+                currentEnvVars.AUTO_STATUS_VIEW = 'true';
+                currentEnvVars.ANTI_DELETE = 'true';
+            }
+            
+            let envText = '';
+            for (const [key, value] of Object.entries(currentEnvVars)) {
+                envText += `${key}=${value}\n`;
+            }
+            document.getElementById('envVarsText').innerText = envText;
+        }
+        
+        function copyEnvVars() {
+            const text = document.getElementById('envVarsText').innerText;
+            navigator.clipboard.writeText(text);
+            alert('✅ Environment variables copied to clipboard!');
         }
         
         document.getElementById('deployForm').addEventListener('submit', async (e) => {
@@ -218,6 +311,7 @@
             const alertDiv = document.getElementById('alert');
             const loader = document.getElementById('loader');
             const deployBtn = document.getElementById('deployBtn');
+            const envPreview = document.getElementById('envPreview');
             
             const botType = document.getElementById('botType').value;
             const botName = document.getElementById('botName').value;
@@ -226,6 +320,7 @@
             const language = document.getElementById('language').value;
             const mode = document.getElementById('mode').value;
             
+            // Validations
             if(!sessionId || sessionId.trim().length < 5) {
                 showAlert('❌ Please enter a valid Session ID', 'error');
                 return;
@@ -236,6 +331,9 @@
                 return;
             }
             
+            // Update preview
+            updateEnvPreview();
+            
             loader.style.display = 'block';
             deployBtn.disabled = true;
             deployBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
@@ -243,8 +341,7 @@
             const repoUrl = SECRET_REPOS[botType];
             const botTypeName = botType === 'main' ? 'MAIN BOT' : 'BUG BOT';
             
-            // ✅ NEW: Railway Deploy URL (GitHub Deploy method)
-            // User ko seedha GitHub repo deploy page pe le jayenge
+            // Railway GitHub Deploy URL (NO 404)
             const railwayDeployUrl = `https://railway.app/github/deploy?repository=${encodeURIComponent(repoUrl)}`;
             
             setTimeout(() => {
@@ -252,27 +349,30 @@
                 deployBtn.disabled = false;
                 deployBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Deploy to Railway';
                 
+                // Show environment variables
+                envPreview.style.display = 'block';
+                
                 showAlert(
-                    '✅ <strong>Redirecting to Railway...</strong><br><br>' +
-                    '📋 <strong>Configuration to set after redirect:</strong><br>' +
+                    '✅ <strong>Deployment Ready!</strong><br><br>' +
+                    '📋 <strong>Your Configuration:</strong><br>' +
                     '• Bot Type: ' + botTypeName + '<br>' +
                     '• Bot Name: ' + botName + '<br>' +
                     '• Owner: ' + phoneNumber + '<br>' +
                     '• Language: ' + language + '<br>' +
                     '• Mode: ' + mode + '<br><br>' +
-                    '📝 <strong>After reaching Railway, set these environment variables:</strong><br>' +
-                    'SESSION=' + sessionId + '<br>' +
-                    'SUDO=' + phoneNumber + '<br>' +
-                    'BOT_NAME=' + botName + '<br>' +
-                    'MODE=' + mode + '<br>' +
-                    'LANGUAGE=' + language + '<br><br>' +
-                    '🔄 Click Deploy on Railway to start your bot!',
+                    '📝 <strong>Next Steps:</strong><br>' +
+                    '1️⃣ Click the button below to open Railway<br>' +
+                    '2️⃣ Click "Deploy from GitHub"<br>' +
+                    '3️⃣ Select your repository<br>' +
+                    '4️⃣ Go to "Variables" tab and paste the environment variables below<br>' +
+                    '5️⃣ Click "Deploy" and wait 2-3 minutes<br><br>' +
+                    '🔄 Your bot will automatically connect with your WhatsApp!',
                     'success'
                 );
                 
                 setTimeout(() => {
                     window.open(railwayDeployUrl, '_blank');
-                }, 3000);
+                }, 2000);
                 
             }, 2000);
         });
@@ -283,17 +383,24 @@
             alertDiv.innerHTML = message;
             alertDiv.style.display = 'block';
             alertDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            setTimeout(() => alertDiv.style.display = 'none', 15000);
+            setTimeout(() => alertDiv.style.display = 'none', 20000);
         }
         
+        // Real-time validation and preview update
         document.getElementById('sessionId').addEventListener('input', function(e) {
             const len = e.target.value.length;
             this.style.borderColor = len >= 5 ? '#51cf66' : len > 0 ? '#ff6b6b' : '#e0e0e0';
+            updateEnvPreview();
         });
         
         document.getElementById('phoneNumber').addEventListener('input', function(e) {
             this.style.borderColor = e.target.value.match(/^\+\d{10,15}$/) ? '#51cf66' : '#ff6b6b';
+            updateEnvPreview();
         });
+        
+        document.getElementById('botName').addEventListener('input', () => updateEnvPreview());
+        document.getElementById('language').addEventListener('change', () => updateEnvPreview());
+        document.getElementById('mode').addEventListener('change', () => updateEnvPreview());
     </script>
 </body>
 </html>
